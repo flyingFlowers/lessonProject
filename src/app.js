@@ -2,46 +2,48 @@ import {createStore} from 'redux';
 import React, {Component} from 'react';
 import ReactDom from 'react-dom';
 
-const counter = (state = 0, action) => {
+let gid = 0;
+const todos = (state = [], action) => {
     switch (action.type) {
-        case 'INCREASE':
-            return state + 1;
-        case 'DECREASE':
-            return state - 1;
+        case 'ADD_TODO':
+            // let newState = [].concat(state);
+            // return newState.push({
+            //     id: ++gid,
+            //     text: action.text,
+            //     completed: false
+            // });
+
+            return [...state, {
+                id: ++gid,
+                text: action.text,
+                completed: false
+            }]
+        case 'TOGGLE_TODO':
+            return state.map((todo) => {
+                if (todo.id == action.id) {
+                    return Object.assign({}, todo, {
+                        completed: !todo.completed
+                    })
+                }
+                return todo;
+            });
         default:
             return state;
     }
 }
 
-const store = createStore(counter);
+let store = createStore(todos);
 
-class Counter extends Component {
-    render() {
-        return (
-            <div>
-                <h1>{store.getState()}</h1>
-                <button onClick={() => {
-                    store.dispatch({
-                        type: 'DECREASE'
-                    })
-                }}>-</button>
-                <button onClick={() => {
-                    store.dispatch({
-                        type: 'INCREASE'
-                    })
-                }}>+</button>
-            </div>
-        )
-    }
-}
-
-const render = () => {
-    ReactDom.render(
-        <Counter/>,
-        document.getElementById('root')
-    )
-}
-
-render();
-
-const unsubscribe = store.subscribe(render);
+console.log('current:', store.getState());
+console.log('dispatch ADD_TODO');
+store.dispatch({
+    type: 'ADD_TODO',
+    text: 'Allen'
+});
+console.log('current:', store.getState());
+console.log('dispatch TOGGLE_TODO');
+store.dispatch({
+    type: 'TOGGLE_TODO',
+    id: 1
+});
+console.log('current:', store.getState())
