@@ -2,48 +2,80 @@ import {createStore} from 'redux';
 import React, {Component} from 'react';
 import ReactDom from 'react-dom';
 
-let gid = 0;
-const todos = (state = [], action) => {
-    switch (action.type) {
-        case 'ADD_TODO':
-            // let newState = [].concat(state);
-            // return newState.push({
-            //     id: ++gid,
-            //     text: action.text,
-            //     completed: false
-            // });
+import rootReducer from './reducers/index.js';
 
-            return [...state, {
-                id: ++gid,
-                text: action.text,
-                completed: false
-            }]
-        case 'TOGGLE_TODO':
-            return state.map((todo) => {
-                if (todo.id == action.id) {
-                    return Object.assign({}, todo, {
-                        completed: !todo.completed
+let store = createStore(rootReducer);
+
+class App extends Component {
+    render() {
+        const state = store.getState();
+        let todos = state.todos;
+        switch (state.visiableFilter) {
+            case 'SHOW_ALL':
+                todos = todos;
+                break;
+            case 'SHOW_COMPLETED':
+                todos = todos.filter((todo) => todo.completed);
+                break;
+            case 'SHOW_ACTIVE':
+                todos = todos.filter((todo) => !todo.completed);
+                break;
+        }
+        return (
+            <div>
+                <input type="text" ref="_Inp"/>
+                <button onClick={() => {
+                    store.dispatch({
+                        type: 'ADD_TODO',
+                        text: this.refs._Inp.value,
                     })
+                } }>Add</button>
+                <ul>
+                    {
+                        todos.map((todo) => <li style={{
+                            textDecoration: todo.completed ? 'line-through' : ''
+                        }} key={todo.id} onClick={() => {
+                            store.dispatch({
+                                type: 'TOGGLE_TODO',
+                                id: todo.id
+                            })
+                        } }>{todo.text}</li>)
+                    }
+                </ul>
+                {
+                    state.visiableFilter == 'SHOW_ALL' ? <span>Show All</span> : <a href="#" onClick={() => {
+                        store.dispatch({
+                            type: 'SHOW_ALL',
+                        });
+                    } }>Show All</a>
                 }
-                return todo;
-            });
-        default:
-            return state;
+                {
+                    state.visiableFilter == 'SHOW_COMPLETED' ? <span>Show Completed</span> : <a href="#" onClick={() => {
+                        store.dispatch({
+                            type: 'SHOW_COMPLETED',
+                        });
+                        console.log('SHOW_COMPLETED')
+                    } }>Show Completed</a>
+                }
+                {
+                    state.visiableFilter == 'SHOW_ACTIVE' ? <span>Show Active</span> : <a href="#" onClick={() => {
+                        store.dispatch({
+                            type: 'SHOW_ACTIVE'
+                        });
+                        console.log('SHOW_ACTIVE')
+                    } }>Show active</a>
+                }
+            </div>
+        )
     }
 }
 
-let store = createStore(todos);
+const render = () => {
+    ReactDom.render(
+        <App/>,
+        document.getElementById('root')
+    )
+}
 
-console.log('current:', store.getState());
-console.log('dispatch ADD_TODO');
-store.dispatch({
-    type: 'ADD_TODO',
-    text: 'Allen'
-});
-console.log('current:', store.getState());
-console.log('dispatch TOGGLE_TODO');
-store.dispatch({
-    type: 'TOGGLE_TODO',
-    id: 1
-});
-console.log('current:', store.getState())
+render();
+store.subscribe(render);
