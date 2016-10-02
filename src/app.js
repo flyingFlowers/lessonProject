@@ -4,12 +4,13 @@ import ReactDom from 'react-dom';
 
 import rootReducer from './reducers/index.js';
 import FilterLink from './components/FilterLink.js';
-
+import AddTodo from './components/AddTodo.js';
+import TodoList from './components/TodoList.js';
+import Footer from './components/Footer.js';
 const store = createStore(rootReducer);
-console.log(store);
 
-const getVisibleTodos = (todos, visiableFilter) =>{
-    switch(visiableFilter){
+const getVisibleTodos = (todos, visiableFilter) => {
+    switch (visiableFilter) {
         case 'SHOW_ALL':
             return todos;
         case 'SHOW_COMPLETED':
@@ -27,49 +28,25 @@ class App extends Component {
         todos = getVisibleTodos(todos, visiableFilter);
         return (
             <div>
-                <input type="text" ref="_Inp"></input>
-                <button onClick={() => {
+                <AddTodo handleClick={(value) => {
                     store.dispatch({
                         type: 'ADD_TODO',
-                        text: this.refs._Inp.value
+                        text: value
                     })
-                }}>ADD</button>
-                <ul>
-                    {
-                        todos.map((todo) => {
-                            return (
-                                <li key={todo.id}
-                                    style={{
-                                        textDecoration: todo.completed ? 'line-through' : 'none'
-                                    }}
-                                    onClick={() => {
-                                    store.dispatch({
-                                        type: 'TOGGLE_TODO',
-                                        id: todo.id
-                                    })
-                                }}>{todo.text}</li>
-                            )
-                        })
-                    }
-                </ul>
-                <FilterLink filter="SHOW_ALL" currentFilter={visiableFilter} handleClick={() => {
+                } }/>
+                <TodoList todos={todos} handleClick={(id) => {
+                    console.log('trigger TodoList')
+                    store.dispatch({
+                        type: 'TOGGLE_TODO',
+                        id: id
+                    })
+                } }/>
+                <Footer currentFilter={visiableFilter} handleClick={(filter) => {
                     store.dispatch({
                         type: 'SET_VISIABLEFILTER',
-                        filter: 'SHOW_ALL'
+                        filter
                     })
-                }}>Show All</FilterLink>
-                <FilterLink filter="SHOW_COMPLETED" currentFilter={visiableFilter} handleClick={() => {
-                    store.dispatch({
-                        type: 'SET_VISIABLEFILTER',
-                        filter: 'SHOW_COMPLETED'
-                    })
-                }}>Show Completed</FilterLink>
-                <FilterLink filter="SHOW_ACTIVE" currentFilter={visiableFilter} handleClick={() => {
-                    store.dispatch({
-                        type: 'SET_VISIABLEFILTER',
-                        filter: 'SHOW_ACTIVE'
-                    })
-                }}>Show Active</FilterLink>
+                } }/>
             </div>
         )
     }
