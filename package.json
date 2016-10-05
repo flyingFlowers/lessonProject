@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "wds": "webpack-dev-server --progress --colors --devtool source-map"    
+    "wds": "webpack-dev-server --progress --colors --devtool source-map"
   },
   "author": "Allen",
   "license": "ISC",
@@ -19,6 +19,7 @@
   "dependencies": {
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+    "react-redux": "^4.4.5",
     "redux": "^3.6.0"
   }
 }
