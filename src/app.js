@@ -12,7 +12,6 @@ const store = createStore(rootReducer);
 
 class App extends Component {
     render() {
-        let {todos, visiableFilter} = store.getState();
         return (
             <div>
                 <AddTodo/>
