@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import FilterLink from '../containers/FilterLink.js';
+import FilterLink from '../components/FilterLink.js';
 import {setVisiableFilter} from '../actions/index.js';
 
 class Footer extends Component {

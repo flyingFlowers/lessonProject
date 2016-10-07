@@ -5,9 +5,9 @@ import {Provider} from 'react-redux';
 
 import rootReducer from './reducers/index.js';
 import FilterLink from './components/FilterLink.js';
-import AddTodo from './components/AddTodo.js';
-import TodoList from './components/TodoList.js';
-import Footer from './components/Footer.js';
+import AddTodo from './containers/AddTodo.js';
+import TodoList from './containers/TodoList.js';
+import Footer from './containers/Footer.js';
 const store = createStore(rootReducer);
 
 class App extends Component {

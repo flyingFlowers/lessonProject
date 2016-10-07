@@ -22,7 +22,7 @@ class AddTodo extends Component {
 const mapDispatchToProps = (dispatch) => {
     return {
         handleClick: (value) => {
-            dispatch(addTodo);
+            dispatch(addTodo(value));
         }
     }
 }
