@@ -10,44 +10,17 @@ class Footer extends Component {
         return (
             <div>
                 <FilterLink
-                    filter="SHOW_ALL"
-                    currentFilter={currentFilter}
-                    handleClick={() => {
-                    this
-                        .props
-                        .handleClick('SHOW_ALL');
-                }}>Show All</FilterLink>
+                    filter="all"
+                    >Show All</FilterLink>
                 <FilterLink
-                    filter="SHOW_COMPLETED"
-                    currentFilter={currentFilter}
-                    handleClick={() => {
-                    this
-                        .props
-                        .handleClick('SHOW_COMPLETED');
-                }}>Show Completed</FilterLink>
+                    filter="completed"
+                   >Show Completed</FilterLink>
                 <FilterLink
-                    filter="SHOW_ACTIVE"
-                    currentFilter={currentFilter}
-                    handleClick={() => {
-                    this
-                        .props
-                        .handleClick('SHOW_ACTIVE');
-                }}>Show Active</FilterLink>
+                    filter="active"
+                   >Show Active</FilterLink>
             </div>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    return {visiableFilter: state.visiableFilter}
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        handleClick: (filter) => {
-            dispatch(setVisiableFilter(filter));
-        }
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Footer);
+export default Footer;
