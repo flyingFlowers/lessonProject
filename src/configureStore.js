@@ -5,31 +5,38 @@ import { saveState, getState } from './localStorage.js';
 import rootReducer from './reducers/index.js';
 
 const addLoggerToDispatch = (store) => {
-    const rawDispatch = store.dispatch;
+    const next = store.dispatch;
     return (action) => {//在redux中dispatch执行完了之后，返回action
         console.log('-------------------');
         console.log('Current state', store.getState());
         console.log('Action:', action);
-        const ret = rawDispatch(action);
+        const ret = next(action);
         console.log('Next state:', store.getState());
         return ret;
     }
 }
 
 const addThunkToDispatch = (store) => {
-    const rawDispatch = store.dispatch;
+    const next = store.dispatch;
     return (action) => {
         if(typeof(action) == 'function') {
             action(store.dispatch, store.getState);
         }else {
-            rawDispatch(action);
+            next(action);
         }
     }
 }
+
+const wrapDispatch = (store, middlewares) => {
+    middlewares.forEach((middleware) => {
+        store.dispatch = middleware(store);
+    })
+}
+
 const configureStore = () => {
     let store = createStore(rootReducer);
-    store.dispatch = addLoggerToDispatch(store);
-    store.dispatch = addThunkToDispatch(store);
+    const middlewares = [addLoggerToDispatch, addThunkToDispatch];
+    wrapDispatch(store, middlewares);
     return store;
 }
 export default configureStore;
