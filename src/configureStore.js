@@ -6,7 +6,7 @@ import rootReducer from './reducers/index.js';
 
 const addLoggerToDispatch = (store) => {
     const rawDispatch = store.dispatch;
-    return (action) => {
+    return (action) => {//在redux中dispatch执行完了之后，返回action
         console.log('-------------------');
         console.log('Current state', store.getState());
         console.log('Action:', action);
@@ -16,9 +16,20 @@ const addLoggerToDispatch = (store) => {
     }
 }
 
+const addThunkToDispatch = (store) => {
+    const rawDispatch = store.dispatch;
+    return (action) => {
+        if(typeof(action) == 'function') {
+            action(store.dispatch, store.getState);
+        }else {
+            rawDispatch(action);
+        }
+    }
+}
 const configureStore = () => {
     let store = createStore(rootReducer);
     store.dispatch = addLoggerToDispatch(store);
+    store.dispatch = addThunkToDispatch(store);
     return store;
 }
 export default configureStore;
