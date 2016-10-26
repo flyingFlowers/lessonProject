@@ -1,4 +1,3 @@
-import {combineReducers} from 'redux';
 const byId = (state = {}, action) => {
     switch (action.type) {
         case 'ADD_TODO':
@@ -25,7 +24,7 @@ const byId = (state = {}, action) => {
                 }
             });
         case 'RECEIVE_TODOS':
-            const nextState = {};
+            const nextState = Object.assign({}, state);
             action.response.forEach((todo) => {
                 nextState[todo.id] = todo;
             })
@@ -35,25 +34,6 @@ const byId = (state = {}, action) => {
     }
 }
 
-const allIds = (state = [], action) => {
-    switch (action.type) {
-        case 'ADD_TODO':
-            return [...state, action.id];
-        case 'RECEIVE_TODOS':
-            return action.response.map(todo => todo.id);
-        default:
-            return state;
-    }
-}
+export default byId;
 
-const todos = combineReducers({
-    byId,
-    allIds
-})
-
-export default todos;
-
-//selector  外层使用的参数为本层的state
-export const getAllTodos = (state) => {
-    return state.allIds.map((id) => state.byId[id]);
-}
+export const getTodo = (state, id) => state[id]; 
