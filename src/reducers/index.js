@@ -1,7 +1,7 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
 import byId, * as fromById from './byId.js';
-import createList from './createList.js';
+import createList, * as fromList from './createList.js';
 
 const idsByFilter = combineReducers({
     all: createList('all'),
@@ -17,5 +17,13 @@ const todos = combineReducers({
 export default todos;
 
 export const getVisibleTodos = (state, filter) => {
-    return state.idsByFilter[filter].map((id) => fromById.getTodo(state.byId, id));
+    return fromList.getIds(state.idsByFilter[filter]).map((id) => fromById.getTodo(state.byId, id));
+}
+
+export const getIsFetching = (state, filter) => {
+    return fromList.getIsFetching(state.idsByFilter[filter]);
+}
+
+export const getErrorMessage = (state, filter) => {
+    return fromList.getErrorMessage(state.idsByFilter[filter])
 }

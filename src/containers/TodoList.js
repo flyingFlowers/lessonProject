@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
 import { toggleTodo, receiveTodos, fetchTodos } from '../actions/index.js';
-import { getVisibleTodos } from '../reducers/index.js';
+import { getVisibleTodos, getIsFetching, getErrorMessage } from '../reducers/index.js';
 // import { fetchTodos } from '../api/index.js';
+import ErrorTip from '../components/ErrorTip.js';
 
 class TodoList extends Component {
     componentDidMount() {
@@ -23,11 +24,24 @@ class TodoList extends Component {
     }
 
     render() {
+        const {todos, isFetching, errorMessage} = this.props;
+        if (isFetching && todos.length <= 0) {
+            return (
+                <div>
+                    Loading......
+                </div>
+            )
+        }
+        if (errorMessage && todos.length <= 0) {
+            return (
+                <ErrorTip message={errorMessage} onRetry={() => {
+                    this.fetchData();
+                } } />
+            )
+        }
         return (
             <ul>
-                {this
-                    .props
-                    .todos
+                {todos
                     .map((todo) => {
                         return (
                             <li
@@ -55,7 +69,9 @@ const mapStateToProps = (state, ownProps) => {
     return {
         //这里使用的是reducer文件夹中index的selector：getVisibleTodos
         todos: getVisibleTodos(state, filter),
-        filter
+        filter,
+        isFetching: getIsFetching(state, filter),
+        errorMessage: getErrorMessage(state, filter)
     }
 }
 
@@ -69,7 +85,7 @@ const mapDispatchToProps = (dispatch) => {
         },
         onFetchTodos: (filter) => {
             dispatch(fetchTodos(filter));
-        }
+        },
     }
 }
 

@@ -1,29 +1,58 @@
-import {v4} from 'node-uuid';//生成随机id（不重复）
+import { v4 } from 'node-uuid';//生成随机id（不重复）
 import * as api from '../api/index.js';
-const addTodo = (value) => {
-    return {type: 'ADD_TODO', id: v4(), text: value};
-}
-
-const toggleTodo = (id) => {
-    return {type: 'TOGGLE_TODO', id: id};
-}
 
 const setVisiableFilter = (filter) => {
-    return {type: 'SET_VISIABLEFILTER', filter: filter};
+    return { type: 'SET_VISIABLEFILTER', filter: filter };
 }
 
-export {addTodo, toggleTodo, setVisiableFilter};
+export { setVisiableFilter };
 
 const receiveTodos = (response, filter) => ({
-    type: 'RECEIVE_TODOS',
+    type: 'FETCH_TODOS_SUCCESS',
     response,
     filter,
 });
 
+const requestTodos = () => ({
+    type: 'FETCH_TODOS_REQUEST'
+})
+
+const fetchTodosFailure = (message) => ({
+    type: 'FETCH_TODOS_FAILURE',
+    message
+})
+
 export const fetchTodos = (filter) => {
     return (dispatch) => {
+        dispatch(requestTodos());
         api.fetchTodos(filter).then((response) => {
             dispatch(receiveTodos(response, filter));
+        }, (error) => {
+            dispatch(fetchTodosFailure(error.message || 'some error happen'))
+        })
+    }
+}
+
+const addTodoSuccess = (response) => ({
+    type: 'ADD_TODO_SUCCESS',
+    response
+});
+export const addTodo = (text) => {
+    return (dispatch, getState) => {
+        api.addTodo(text).then((response) => {
+            dispatch(addTodoSuccess(response));
+        })
+    }
+}
+
+const toggleTodoSuccess = (response) => ({
+    type: 'TOGGLE_TODO_SUCCESS',
+    response
+});
+export const toggleTodo = (id) => {
+    return (dispatch, getState) => {
+        api.toggleTodo(id).then((response) => {
+            dispatch(toggleTodoSuccess(response));
         })
     }
 }

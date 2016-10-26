@@ -15,7 +15,10 @@ const mockData = [
 ]
 
 export const fetchTodos = (filter) => {
-    return delay(1000).then((todo) => {
+    return delay(1000).then(() => {
+        // if (Math.random() > 0.5) {
+        //     throw new Error('blood boom');
+        // }
         switch (filter) {
             case 'all':
                 return mockData;
@@ -26,5 +29,25 @@ export const fetchTodos = (filter) => {
             default:
                 throw new Error('unknow filter');
         }
+    })
+}
+
+export const addTodo = (text) => {
+    return delay(1000).then(() => {
+        const todo = {
+            id: v4(),
+            text,
+            completed: false
+        }
+        mockData.push(todo);
+        return todo;
+    })
+}
+
+export const toggleTodo = (id) => {
+    return delay(1000).then(() => {
+        const todo = mockData.find((todo) => todo.id == id);
+        todo.completed = !todo.completed;
+        return todo;
     })
 }
